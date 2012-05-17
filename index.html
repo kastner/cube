@@ -26,25 +26,25 @@
   <style>
     body {
       -webkit-perspective: 800px;
+      background: grey;
     }
 
     #cube {
       width: 500px;
       height: 500px;
       border: 1px solid green;
-      background: #aaa;
       -webkit-transform-style: preserve-3d;
     }
 
     #cube .cubie {
       border: 1px solid purple;
-      width: 50px;
-      height: 50px;
-      -webkit-transform: rotateX(-30deg) rotateY(5deg);
+      width: 20px;
+      height: 20px;
+      /*-webkit-transform: rotateX(-30deg) rotateY(5deg);*/
       -webkit-transform-style: preserve-3d;
 
-      top: 200px;
-      left: 200px;
+      top: 250px;
+      left: 250px;
       position: absolute;
 
     }
@@ -69,9 +69,33 @@
     .d { -webkit-transform: translateY( 50%) rotateX(-90deg); }
     .l { -webkit-transform: translateX(-50%) rotateY(-90deg); }
     .r { -webkit-transform: translateX( 50%) rotateY( 90deg); }
-    .f { -webkit-transform: translateZ(10px) rotateX(  0deg) /*z-index: 100;*/ }
-    .b { -webkit-transform: translateZ(-10px) rotateX(180deg) z-index: -100; }
+    .f { -webkit-transform: translateZ(12px) rotateX(  0deg); z-index:  100; }
+    .b { -webkit-transform: translateZ(-12px) rotateX(180deg); z-index: -100; }
 
+    .cubie.U {
+      margin-top: -20px !important;
+    }
+
+    .cubie.D {
+      margin-top: 20px !important;
+    }
+
+    .cubie.L {
+      margin-left: -20px !important;
+    }
+
+    .cubie.R {
+      margin-left: 20px !important;
+    }
+    
+    .cubie.F {
+      -webkit-transform: translateZ(40px);
+    }
+    
+    .cubie.B {
+      -webkit-transform: translateZ(-40px);
+    }
+  
   </style>
 </head> 
  
@@ -97,63 +121,83 @@
   </script>
   
   <script>
-    cubieRot = {x: -30, y: 5, z: 0};
+    cubieRot = {x: -24, y: -19, z: 0};
+
+    function rotateIt () {
+      $("#cube ").css("-webkit-transform", "rotateX(" + cubieRot.x + "deg) rotateY(" + cubieRot.y + "deg) rotateZ(" + cubieRot.z + "deg)");
+    }
 
     $(function () {
+
+      setTimeout(function () { rotateIt(); }, 200);
+
       // c1 = white (u), c2 = yellow (d), c3 = red (l), c4 = orange (r), c5 = blue (f), c6 = green (b)
-      var UFLCubie = {
-        name: "UFL",
+      var uColor = "c1", dColor = "c2", lColor = "c3", rColor = "c4", fColor = "c5", bColor = "c6";
+      var nonColor = "c0";
 
-        faces: {
-          u: "c1",
-          f: "c5",
-          l: "c3",
-          d: "c0",
-          r: "c0",
-          b: "c0"
+      var cubies = [
+        {
+          layers: ["F"],
+          faces: { f: fColor }
+        },
+        
+        {
+          layers: ["U", "F", "L"],
+          faces: { u: uColor, f: fColor, l: lColor }
+        },
+
+        {
+          layers: ["U", "F"],
+          faces: { u: uColor, f: fColor }
+        },
+
+        {
+          layers: ["U", "F", "R"],
+          faces: { u: uColor, f: fColor, r: rColor }
+        },
+
+        {
+          layers: ["R", "F"],
+          faces: { f: fColor, r: rColor }
+        },
+
+        {
+          layers: ["L", "F"],
+          faces: { f: fColor, l: lColor }
+        },
+
+        {
+          layers: ["D", "F", "L"],
+          faces: { f: fColor, l: lColor, d: dColor }
+        },
+
+        {
+          layers: ["D", "F"],
+          faces: { f: fColor, d: dColor }
+        },
+
+        {
+          layers: ["D", "F", "R"],
+          faces: { f: fColor, d: dColor, r: rColor }
+        },
+
+        {
+          layers: ["D", "F"],
+          faces: { f: fColor, d: dColor }
         }
-      };
 
-      cubies = [UFLCubie];
+      ];
 
       // draw cubies
       cubies.forEach(function (cubie) {
-        cubieContainer = $("<div id='" + cubie.name + "' class='cubie'>");
+        cubieContainer = $("<div id='" + cubie.layers.join("") + "' class='cubie " + cubie.layers.join(" ") + "'>");
 
-        for (face in cubie.faces) {
-          console.log(face);
-          console.log(cubie.faces[face]);
-          //if (! cubie.hasOwnProperty(face)) { continue; }
-
-          // should I draw hidden faces?
-
-          cubieFace = $("<div class='face " + face + " " + cubie.faces[face] + "'>")
-            .html("&nbsp;");
-
-          // switch(face) {
-          //   case "u":
-          //     cubieFace.css("-webkit-transform: translateX(90deg);");
-          //     break;
-          //   case "d":
-          //     cubieFace.css("-webkit-transform: translateX(-90deg);");
-          //     break;
-          //   case "l":
-          //     cubieFace.css("-webkit-transform: translateY(-90deg);");
-          //     break;
-          //   case "r":
-          //     cubieFace.css("-webkit-transform: translateY(90deg);");
-          //     break;
-          //   case "b":
-          //     cubieFace.css("-webkit-transform: translateX(180deg);");
-          //     break;
-          //   case "f": // front faces us
-          //     // cubieFace.css("-webkit-transform: translateX(90deg);");
-          //     break;
-          // }
-            
+        ["u", "d", "l", "r", "f", "b"].forEach(function (face) {
+          var color = (cubie.faces.hasOwnProperty(face) ? cubie.faces[face] : nonColor);
+          cubieFace = $("<div class='face " + face + " " + color + "'>").html("&nbsp;");
 
           cubieContainer.append(cubieFace);
-        }
+        });
 
         $("#cube").append(cubieContainer);
       });
@@ -161,14 +205,18 @@
       $(document).on("keydown", function (e) {
         // console.log(e.keyCode);
         switch (e.keyCode) {
-          case 37:
-            $("")
+          case 37: // left
+            cubieRot.y = cubieRot.y - 2; break;
+          case 39: // right
+            cubieRot.y = cubieRot.y + 2; break;
+          case 38: // up
+            cubieRot.x = cubieRot.x - 2; break;
+          case 40: // down
+            cubieRot.x = cubieRot.x + 2; break;
         }
-        left is 37
-        right is 39
-        up is 38
-        down is 40
-      })
+
+        rotateIt();
+      });
     });
 
 
