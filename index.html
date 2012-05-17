@@ -1,0 +1,187 @@
+<!doctype html> 
+<html lang="en" class="no-js"> 
+<head> 
+  <meta charset="utf-8"> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+  <title>Cube!</title> 
+  <meta name="HandheldFriendly" content="True"> 
+  <meta name="MobileOptimized" content="320"/> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <!-- For iPhone 4 with high-resolution Retina display: --> 
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="114x114" href="mobile/images/h/apple-touch-icon.png">  -->
+  <!-- For first-generation iPad: --> 
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="72x72" href="mobile/images/m/apple-touch-icon.png">  -->
+  <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: --> 
+  <!-- <link rel="apple-touch-icon-precomposed" href="/mobile/images/l/apple-touch-icon-precomposed.png">  -->
+  <!-- For nokia devices: --> 
+  <!-- <link rel="shortcut icon" href="/mobile/images/l/apple-touch-icon.png">  -->
+  
+  <meta name="apple-mobile-web-app-capable" content="yes"> 
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+  <!-- <link rel="apple-touch-startup-image" href="/mobile/images/l/splash.png">  -->
+  <meta http-equiv="cleartype" content="on"> 
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/libs/modernizr-2.5.0.min.js"></script>
+
+  <style>
+    body {
+      -webkit-perspective: 800px;
+    }
+
+    #cube {
+      width: 500px;
+      height: 500px;
+      border: 1px solid green;
+      background: #aaa;
+      -webkit-transform-style: preserve-3d;
+    }
+
+    #cube .cubie {
+      border: 1px solid purple;
+      width: 50px;
+      height: 50px;
+      -webkit-transform: rotateX(-30deg) rotateY(5deg);
+      -webkit-transform-style: preserve-3d;
+
+      top: 200px;
+      left: 200px;
+      position: absolute;
+
+    }
+
+    #cube .cubie .face {
+      border: 2px solid black;
+      width: 20px;
+      height: 20px;
+      display: block;
+      position: absolute;
+    }
+
+    .c0 { background: black; }
+    .c1 { background: white; }
+    .c2 { background: yellow; }
+    .c3 { background: red; }
+    .c4 { background: orange; }
+    .c5 { background: blue; }
+    .c6 { background: green; }
+
+    .u { -webkit-transform: translateY(-50%) rotateX( 90deg); }
+    .d { -webkit-transform: translateY( 50%) rotateX(-90deg); }
+    .l { -webkit-transform: translateX(-50%) rotateY(-90deg); }
+    .r { -webkit-transform: translateX( 50%) rotateY( 90deg); }
+    .f { -webkit-transform: translateZ(10px) rotateX(  0deg) /*z-index: 100;*/ }
+    .b { -webkit-transform: translateZ(-10px) rotateX(180deg) z-index: -100; }
+
+  </style>
+</head> 
+ 
+<body>
+  <div id="container">
+    <header id="header">
+      <h1>Cube thing</h1>
+    </header>
+
+    <div id="body">
+      <div id="cube"></div>
+    </div>
+
+    <footer id="footer">
+    </footer> 
+  </div> 
+  
+  <script src="js/libs/jquery-1.7.1.min.js"></script> 
+  <!-- // <script src="/mobile/js/plugins.min.js"></script> -->
+  <!-- // <script src="/mobile/js/script.js"></script> -->
+  <script>
+    // MBP.scaleFix();
+  </script>
+  
+  <script>
+    cubieRot = {x: -30, y: 5, z: 0};
+
+    $(function () {
+      // c1 = white (u), c2 = yellow (d), c3 = red (l), c4 = orange (r), c5 = blue (f), c6 = green (b)
+      var UFLCubie = {
+        name: "UFL",
+
+        faces: {
+          u: "c1",
+          f: "c5",
+          l: "c3",
+          d: "c0",
+          r: "c0",
+          b: "c0"
+        }
+      };
+
+      cubies = [UFLCubie];
+
+      // draw cubies
+      cubies.forEach(function (cubie) {
+        cubieContainer = $("<div id='" + cubie.name + "' class='cubie'>");
+
+        for (face in cubie.faces) {
+          console.log(face);
+          console.log(cubie.faces[face]);
+          //if (! cubie.hasOwnProperty(face)) { continue; }
+
+          // should I draw hidden faces?
+
+          cubieFace = $("<div class='face " + face + " " + cubie.faces[face] + "'>")
+            .html("&nbsp;");
+
+          // switch(face) {
+          //   case "u":
+          //     cubieFace.css("-webkit-transform: translateX(90deg);");
+          //     break;
+          //   case "d":
+          //     cubieFace.css("-webkit-transform: translateX(-90deg);");
+          //     break;
+          //   case "l":
+          //     cubieFace.css("-webkit-transform: translateY(-90deg);");
+          //     break;
+          //   case "r":
+          //     cubieFace.css("-webkit-transform: translateY(90deg);");
+          //     break;
+          //   case "b":
+          //     cubieFace.css("-webkit-transform: translateX(180deg);");
+          //     break;
+          //   case "f": // front faces us
+          //     // cubieFace.css("-webkit-transform: translateX(90deg);");
+          //     break;
+          // }
+            
+
+          cubieContainer.append(cubieFace);
+        }
+
+        $("#cube").append(cubieContainer);
+      });
+
+      $(document).on("keydown", function (e) {
+        // console.log(e.keyCode);
+        switch (e.keyCode) {
+          case 37:
+            $("")
+        }
+        left is 37
+        right is 39
+        up is 38
+        down is 40
+      })
+    });
+
+
+    setInterval(function () {
+
+    }, 200);
+  </script>
+
+  <script>
+    // var _gaq=[['_setAccount','UA-17904194-1'],['_trackPageview']];
+    // (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
+    // g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    // s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script> 
+</body> 
+</html>
