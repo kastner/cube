@@ -89,11 +89,11 @@
     }
     
     .cubie.F {
-      -webkit-transform: translateZ(40px);
+      -webkit-transform: translateZ(20px);
     }
     
     .cubie.B {
-      -webkit-transform: translateZ(-40px);
+      -webkit-transform: translateZ(-20px);
     }
   
   </style>
@@ -121,7 +121,8 @@
   </script>
   
   <script>
-    cubieRot = {x: -24, y: -19, z: 0};
+    var cubieRot = {x: -24, y: -19, z: 0};
+    var cubies = [];
 
     function rotateIt () {
       $("#cube ").css("-webkit-transform", "rotateX(" + cubieRot.x + "deg) rotateY(" + cubieRot.y + "deg) rotateZ(" + cubieRot.z + "deg)");
@@ -135,61 +136,55 @@
       var uColor = "c1", dColor = "c2", lColor = "c3", rColor = "c4", fColor = "c5", bColor = "c6";
       var nonColor = "c0";
 
-      var cubies = [
-        {
-          layers: ["F"],
-          faces: { f: fColor }
-        },
-        
-        {
-          layers: ["U", "F", "L"],
-          faces: { u: uColor, f: fColor, l: lColor }
-        },
+      cubies = [
 
-        {
-          layers: ["U", "F"],
-          faces: { u: uColor, f: fColor }
-        },
+        // Front Layer
+        { faces: { f: fColor } },
+        { faces: { f: fColor, u: uColor, l: lColor } },
+        { faces: { f: fColor, u: uColor } },
+        { faces: { f: fColor, u: uColor, r: rColor } },
+        { faces: { f: fColor, r: rColor } },
+        { faces: { f: fColor, l: lColor } },
+        { faces: { f: fColor, l: lColor, d: dColor } },
+        { faces: { f: fColor, d: dColor } },
+        { faces: { f: fColor, d: dColor, r: rColor } },
+        { faces: { f: fColor, d: dColor } },
 
-        {
-          layers: ["U", "F", "R"],
-          faces: { u: uColor, f: fColor, r: rColor }
-        },
+        // "S" slice
+        {faces: { l: lColor, u: uColor } },
+        {faces: { r: rColor, u: uColor } },
+        {faces: { l: lColor, d: dColor } },
+        {faces: { r: rColor, d: dColor } },
+        {faces: { r: rColor } },
+        {faces: { l: lColor } },
+        {faces: { u: uColor } },
+        {faces: { d: dColor } },
 
-        {
-          layers: ["R", "F"],
-          faces: { f: fColor, r: rColor }
-        },
-
-        {
-          layers: ["L", "F"],
-          faces: { f: fColor, l: lColor }
-        },
-
-        {
-          layers: ["D", "F", "L"],
-          faces: { f: fColor, l: lColor, d: dColor }
-        },
-
-        {
-          layers: ["D", "F"],
-          faces: { f: fColor, d: dColor }
-        },
-
-        {
-          layers: ["D", "F", "R"],
-          faces: { f: fColor, d: dColor, r: rColor }
-        },
-
-        {
-          layers: ["D", "F"],
-          faces: { f: fColor, d: dColor }
-        }
-
+        // // Back Layer
+        // {
+        //   layers: ["B", "L", "U"],
+        //   faces: { b: bColor, l: lColor, u: uColor }
+        // }
       ];
+
+      colorMap = {
+        u: uColor, d: dColor, l: lColor, r: rColor, f: fColor, b: bColor
+      };
+
+      ["B"].forEach(function (layer) {
+        lLayer = layer.toLowerCase();
+        var newCube = {
+          layers: [layer],
+          faces: {}
+        };
+        newCube.faces[lLayer] = colorMap[lLayer];
+        cubies.push(newCube);
+      });
 
       // draw cubies
       cubies.forEach(function (cubie) {
+        cubie.layers = Object.keys(cubie.faces).map(function (l) { return l.toUpperCase(); })
+
         cubieContainer = $("<div id='" + cubie.layers.join("") + "' class='cubie " + cubie.layers.join(" ") + "'>");
 
         ["u", "d", "l", "r", "f", "b"].forEach(function (face) {
