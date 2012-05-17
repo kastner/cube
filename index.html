@@ -109,6 +109,7 @@
       <div id="cube"></div>
     </div>
 
+    <button id="bloop">Bloop</button>
     <footer id="footer">
     </footer> 
   </div> 
@@ -129,7 +130,31 @@
     }
 
     $(function () {
+      var blooped = false;
+      $("#bloop").on("click", function () {
+        var ang;
+        if (blooped) {
+          ang = -90;
+        } else {
+          ang = 90;
+        }
+        // $(".R")
+        //   // .css("-webkit-transform-origin", "250px  250px 0px")
+        //   .css("-webkit-transform-origin", "20px  20px 20px")
+        //   .css("-webkit-transition-duration", "1s")
+        //   .css("-webkit-transform", "rotate3d(1, 0, 0, 90deg)");
+          
+        // cubies[3].container.css("-webkit-transform", "rotate3d(1, 0, 0, 80deg)");
+        cubies[3].container
+          .css("-webkit-transition-duration", "1s")
+          .css("-webkit-transform-origin", "0px  70px 30px")
 
+        var element = cubies[3].container[0];
+        var transform = new  WebKitCSSMatrix(window.getComputedStyle(element).webkitTransform);
+        transform = transform.rotate(ang,0,0)
+        element.style.webkitTransform = transform;
+        blooped = ! blooped;
+      });
       setTimeout(function () { rotateIt(); }, 200);
 
       // c1 = white (u), c2 = yellow (d), c3 = red (l), c4 = orange (r), c5 = blue (f), c6 = green (b)
@@ -160,26 +185,19 @@
         {faces: { u: uColor } },
         {faces: { d: dColor } },
 
-        // // Back Layer
-        // {
-        //   layers: ["B", "L", "U"],
-        //   faces: { b: bColor, l: lColor, u: uColor }
-        // }
+        // Back Layer
+        { faces: { b: bColor } },
+        { faces: { b: bColor, u: uColor, l: lColor } },
+        { faces: { b: bColor, u: uColor } },
+        { faces: { b: bColor, u: uColor, r: rColor } },
+        { faces: { b: bColor, r: rColor } },
+        { faces: { b: bColor, l: lColor } },
+        { faces: { b: bColor, l: lColor, d: dColor } },
+        { faces: { b: bColor, d: dColor } },
+        { faces: { b: bColor, d: dColor, r: rColor } },
+        { faces: { b: bColor, d: dColor } },
+
       ];
-
-      colorMap = {
-        u: uColor, d: dColor, l: lColor, r: rColor, f: fColor, b: bColor
-      };
-
-      ["B"].forEach(function (layer) {
-        lLayer = layer.toLowerCase();
-        var newCube = {
-          layers: [layer],
-          faces: {}
-        };
-        newCube.faces[lLayer] = colorMap[lLayer];
-        cubies.push(newCube);
-      });
 
       // draw cubies
       cubies.forEach(function (cubie) {
@@ -193,6 +211,8 @@
 
           cubieContainer.append(cubieFace);
         });
+
+        cubie.container = cubieContainer;
 
         $("#cube").append(cubieContainer);
       });
